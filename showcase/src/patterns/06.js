@@ -108,12 +108,11 @@ const useClapAnimation = ({
   return animationTimeline;
 };
 
-const MediumClap = () => {
-  const MAXIMUM_USER_CLAP = 50;
-
-  const [clapState, setClapState] = useState(initialState);
-  const { count, countTotal, isClicked } = clapState;
-  const [{ clapRef, countRef, totalCountRef }, setRefState] = useState({})
+/**
+ * UseDOMRef Hook
+ */
+const useDOMRef = () => {
+  const [DOMRef, setRefState] = useState({})
 
   const setRef = useCallback(node => {
     setRefState(prevRefState => ({
@@ -122,10 +121,23 @@ const MediumClap = () => {
     }))
   }, []);
 
+  return [DOMRef, setRef]
+};
+
+const MediumClap = () => {
+  const MAXIMUM_USER_CLAP = 50;
+
+  const [clapState, setClapState] = useState(initialState);
+  const { count, countTotal, isClicked } = clapState;
+
+  // use custom hook
+  const [{ clapRef, clapCountRef, clapTotalRef }, setRef] = useDOMRef();
+
+
   const animationTimeline = useClapAnimation({
     clapEl: clapRef,
-    countEl: countRef,
-    clapTotalEl: totalCountRef
+    countEl: clapCountRef,
+    clapTotalEl: clapTotalRef
   });
 
   const handleClapClick = () => {
@@ -165,13 +177,13 @@ const ClapIcon = ({ isClicked }) => {
 }
 
 const ClapCount = ({ count, setRef }) => {
-  return <span ref={setRef} data-refkey='countRef' className={styles.count}>
+  return <span ref={setRef} data-refkey='clapCountRef' className={styles.count}>
     + {count}
   </span>
 }
 
 const CountTotal = ({ countTotal, setRef }) => {
-  return <span ref={setRef} data-refkey='totalCountRef' className={styles.total}>
+  return <span ref={setRef} data-refkey='clapTotalRef' className={styles.total}>
     {countTotal}
   </span>
 }
