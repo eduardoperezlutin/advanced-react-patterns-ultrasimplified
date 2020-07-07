@@ -220,8 +220,14 @@ const CountTotal = ({ countTotal, setRef, ...restProps }) => {
 /**
  * Usage
  */
+const userInitialState = {
+  count: 0,
+  countTotal: 1000,
+  isClicked: true
+}
+
 const Usage = () => {
-  const { clapState, updateClapState, getTogglerProps, getCounterProps } = useClapState();
+  const { clapState, updateClapState, getTogglerProps, getCounterProps } = useClapState(userInitialState);
   const { count, countTotal, isClicked } = clapState;
 
   // use custom hook useDOMRef
