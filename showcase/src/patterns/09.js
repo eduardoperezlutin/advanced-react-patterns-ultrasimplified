@@ -130,6 +130,19 @@ const callFnsInSequence = (...fns) => (...args) => {
 }
 
 /**
+ * Custom hook for getting previous prop/state
+ */
+const usePrevious = (value) => {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  });
+
+  return ref.current;
+};
+
+/**
  * custom hook for useClapState
  */
 const useClapState = (initialState = INITIAL_STATE) => {
@@ -148,11 +161,14 @@ const useClapState = (initialState = INITIAL_STATE) => {
 
   // glorified counter
   const resetRef = useRef(0);
+  const prevCount = usePrevious(count);
   const reset = useCallback(() => {
-    setClapState(userInitialState.current);
-    
-    resetRef.current++;
-  }, [setClapState]);
+
+    if (prevCount !== count) {
+      setClapState(userInitialState.current);
+      resetRef.current++;
+    }
+  }, [prevCount, count, setClapState]);
 
   // props collection for 'click'
   const getTogglerProps = ({ onClick, ...otherProps } = {}) => ({
@@ -284,7 +300,7 @@ const Usage = () => {
           reset
         </button>
         <pre className={userStyles.resetMsg}>
-          {JSON.stringify({count, countTotal, isClicked})}
+          {JSON.stringify({ count, countTotal, isClicked })}
         </pre>
         <pre className={userStyles.resetMsg}>
           {uploadingReset ? `uploading reset ${resetDep} ...` : ''}
