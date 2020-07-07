@@ -256,23 +256,22 @@ const Usage = () => {
 
   return (
     <div>
-
-    <ClapContainer setRef={setRef} data-refkey='clapRef' {...getTogglerProps({
-      onClick: handleClick,
-      'aria-pressed': false
-    })}>
-      <ClapIcon isClicked={isClicked} />
-      <ClapCount setRef={setRef} data-refkey='clapCountRef' {...getCounterProps()} />
-      <CountTotal countTotal={countTotal} setRef={setRef} data-refkey='clapTotalRef' />
-    </ClapContainer>
-    <section>
-      <button onClick={reset} className={userStyles.resetBtn}>
-        reset
-      </button>
-      <pre className={userStyles.resetMsg}>
-        {JSON.stringify({count, countTotal, isClicked})}
-      </pre>
-    </section>
+      <ClapContainer setRef={setRef} data-refkey='clapRef' {...getTogglerProps({
+        onClick: handleClick,
+        'aria-pressed': false
+      })}>
+        <ClapIcon isClicked={isClicked} />
+        <ClapCount setRef={setRef} data-refkey='clapCountRef' {...getCounterProps()} />
+        <CountTotal countTotal={countTotal} setRef={setRef} data-refkey='clapTotalRef' />
+      </ClapContainer>
+      <section>
+        <button onClick={reset} className={userStyles.resetBtn}>
+          reset
+        </button>
+        <pre className={userStyles.resetMsg}>
+          {JSON.stringify({count, countTotal, isClicked})}
+        </pre>
+      </section>
     </div>
   )
 }
