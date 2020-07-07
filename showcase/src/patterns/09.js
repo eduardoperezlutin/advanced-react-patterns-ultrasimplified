@@ -146,8 +146,12 @@ const useClapState = (initialState = INITIAL_STATE) => {
     }))
   }, [count, countTotal]);
 
+  // glorified counter
+  const resetRef = useRef(0);
   const reset = useCallback(() => {
     setClapState(userInitialState.current);
+    
+    resetRef.current++;
   }, [setClapState]);
 
   // props collection for 'click'
@@ -166,7 +170,7 @@ const useClapState = (initialState = INITIAL_STATE) => {
     ...otherProps
   })
 
-  return { clapState, updateClapState, getTogglerProps, getCounterProps, reset };
+  return { clapState, updateClapState, getTogglerProps, getCounterProps, reset, resetDep: resetRef.current };
 };
 
 
@@ -233,7 +237,7 @@ const userInitialState = {
 }
 
 const Usage = () => {
-  const { clapState, updateClapState, getTogglerProps, getCounterProps, reset } = useClapState(userInitialState);
+  const { clapState, updateClapState, getTogglerProps, getCounterProps, reset, resetDep } = useClapState(userInitialState);
   const { count, countTotal, isClicked } = clapState;
 
   // use custom hook useDOMRef
@@ -249,6 +253,17 @@ const Usage = () => {
   useEffectAfterMount(() => {
     animationTimeline.replay();
   }, [count])
+
+  const [uploadingReset, setUpload] = useState(false);
+  useEffectAfterMount(() => {
+    setUpload(true);
+
+    const id = setTimeout(() => {
+      setUpload(false);
+    }, 3000);
+
+    return () => clearTimeout(id);
+  }, [resetDep])
 
   const handleClick = () => {
     console.log("clicked!")
@@ -270,6 +285,9 @@ const Usage = () => {
         </button>
         <pre className={userStyles.resetMsg}>
           {JSON.stringify({count, countTotal, isClicked})}
+        </pre>
+        <pre className={userStyles.resetMsg}>
+          {uploadingReset ? `uploading reset ${resetDep} ...` : ''}
         </pre>
       </section>
     </div>
